@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
+	import { flip } from 'svelte/animate';
 
-	const submit = (event) => {
-		if (event.key === 'Enter') {
-			console.log(`Adding ${newTaskName}`);
-			tasks.set([...$tasks, newTaskName]);
-			newTaskName = '';
-		}
+	const addTask = () => {
+		tasks.set([...$tasks, newTaskName]);
+		newTaskName = '';
+	};
+
+	const removeTask = (task: string) => {
+		tasks.set([...$tasks].filter((t) => t != task));
 	};
 
 	let newTaskName = '';
@@ -20,11 +22,16 @@
 <main>
 	<div class="container">
 		<h1>javelin</h1>
-		<input type="text" placeholder="New task" on:keydown={submit} bind:value={newTaskName} />
+		<input
+			type="text"
+			placeholder="New task"
+			on:keydown={(k) => k.key === 'Enter' && addTask()}
+			bind:value={newTaskName}
+		/>
 		<div class="tasks">
-			{#each $tasks as task}
-				<div class="task">
-					<input type="checkbox" name={task} value={task} />
+			{#each $tasks as task (task)}
+				<div animate:flip class="task">
+					<input on:change={() => removeTask(task)} type="checkbox" name={task} value={task} />
 					<label for={task}>{task}</label>
 				</div>
 			{/each}
