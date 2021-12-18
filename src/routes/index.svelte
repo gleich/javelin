@@ -1,18 +1,24 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
+	import { Writable, writable } from 'svelte/store';
 	import { flip } from 'svelte/animate';
+	import { nanoid } from 'nanoid';
+
+	interface Task {
+		name: string;
+		id: string;
+	}
 
 	const addTask = () => {
-		tasks.set([...$tasks, newTaskName]);
-		newTaskName = '';
+		tasks.set([...$tasks, { name: newTask, id: nanoid() }]);
+		newTask = '';
 	};
 
-	const removeTask = (task: string) => {
-		tasks.set([...$tasks].filter((t) => t != task));
+	const removeTask = (id: string) => {
+		tasks.set([...$tasks.filter((t) => t.id != id)]);
 	};
 
-	let newTaskName = '';
-	const tasks = writable([]);
+	let newTask = '';
+	const tasks: Writable<Task[]> = writable([]);
 </script>
 
 <svelte:head>
@@ -26,23 +32,32 @@
 			type="text"
 			placeholder="New task"
 			on:keydown={(k) => k.key === 'Enter' && addTask()}
-			bind:value={newTaskName}
+			bind:value={newTask}
 		/>
 		<div class="tasks">
-			{#each $tasks as task (task)}
+			{#each $tasks as task (task.id)}
 				<div animate:flip class="task">
-					<input on:change={() => removeTask(task)} type="checkbox" name={task} value={task} />
-					<label for={task}>{task}</label>
+					<input
+						on:change={() => removeTask(task.id)}
+						type="checkbox"
+						name={task.id}
+						value={task.name}
+					/>
+					<label for={task.id}>{task.name}</label>
 				</div>
 			{/each}
 		</div>
 	</div>
 </main>
+<footer>
+	<p>&copy; {new Date().getFullYear()} Matt Gleich</p>
+	<a href="https://github.com/gleich/javelin" target="_blank">gleich/javelin</a>
+</footer>
 
 <style>
 	main {
-		width: 100vw;
-		height: 98vh;
+		width: 90vw;
+		height: 90vh;
 		max-width: 100%;
 		max-height: 100%;
 		display: flex;
@@ -70,10 +85,25 @@
 		display: flex;
 		flex-direction: column;
 		padding-top: 30px;
+		max-height: 40vh;
 	}
 
 	.task {
 		display: flex;
 		gap: 5px;
+	}
+
+	footer {
+		position: absolute;
+		bottom: 0;
+		width: 99%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 20px;
+	}
+
+	a {
+		color: #418fdd;
 	}
 </style>

@@ -1,6 +1,6 @@
 :root {
 	--background-color: #0f0f0f;
-	--foreground-color: white;
+	--foreground-color: #ffffff;
 }
 
 body {
@@ -10,9 +10,9 @@ body {
 }
 
 @media (prefers-color-scheme: light) {
-	body {
-		background-color: var(--foreground-color);
-		color: var(--background-color);
+	:root {
+		--foreground-color: #0f0f0f;
+		--background-color: #ffffff;
 	}
 }
 
