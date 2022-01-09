@@ -7,6 +7,7 @@ body {
 	background-color: var(--background-color);
 	color: var(--foreground-color);
 	font-family: 'Inter';
+	margin: 0;
 }
 
 @media (prefers-color-scheme: light) {
